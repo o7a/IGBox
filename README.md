@@ -1,4 +1,4 @@
-# IGBox v5 
+# IGBox v6
 
 It is one tool for several other tools that help you in Instagram and it is completely free and will remain
 
@@ -27,6 +27,10 @@ It is one tool for several other tools that help you in Instagram and it is comp
   - Delete chat
   - Cheack Email Linked (Rest E-Mail)
   - Get Public email
+  - Switch Accounts type
+  - Change Password From list
+  - Sort Combo
+  - Increase real followers
 
 # The Coder
  Osama A.M.Y - [Telegram Channel](https://t.me/O0Dev)
