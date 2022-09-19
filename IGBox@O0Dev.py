@@ -44,12 +44,12 @@ class IGBoxO0Dev():
         """)
 
     def CheckFiles(self):
-        if os.path.exists(f'O0Dev//story.txt') == False:
-            open('O0Dev//story.txt','a')
-        if os.path.exists(f'O0Dev//accounts.txt') == False:
-            open('O0Dev//accounts.txt','a')
-        if os.path.exists(f'O0Dev//combo.txt') == False:
-            open('O0Dev//combo.txt','a')
+        if os.path.exists(f'story.txt') == False:
+            open('story.txt','a')
+        if os.path.exists(f'accounts.txt') == False:
+            open('accounts.txt','a')
+        if os.path.exists(f'combo.txt') == False:
+            open('combo.txt','a')
 
         self.HomeScreen()
 
@@ -375,7 +375,7 @@ class IGBoxO0Dev():
         target = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Target : ')
 
         try:
-            accs = open('O0Dev//accounts.txt','r').read().splitlines()
+            accs = open('accounts.txt','r').read().splitlines()
         except:
             print(f'{self.b1}{self.b4}{self.b2}{self.b0} accounts.txt Not Found here')
             sleep(3)
@@ -441,7 +441,7 @@ class IGBoxO0Dev():
         post = f'{target}?__a=1&__d=dis'
 
         try:
-            accs = open('O0Dev//accounts.txt','r').read().splitlines()
+            accs = open('accounts.txt','r').read().splitlines()
         except:
             print(f'{self.b1}{self.b4}{self.b2}{self.b0} accounts.txt Not Found here')
             sleep(3)
@@ -538,7 +538,7 @@ class IGBoxO0Dev():
         what = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Num of ur option > ')
         if what == '1':
             try:
-                file = open('O0Dev//story.txt','r').read().splitlines()
+                file = open('story.txt','r').read().splitlines()
             except:
                 print(f'{self.b1}{self.b5}{self.b2}{self.b0} Error in open story.txt file')
                 sleep(3)
@@ -767,8 +767,8 @@ class IGBoxO0Dev():
 
             for x in range(int(num_post)):
                 post = requests.get('https://picsum.photos/500/500?random=1')
-                save = open('O0Dev//photo@O0Dev.jpg','wb').write(post.content)
-                image = 'O0Dev//photo@O0Dev.jpg'
+                save = open('photo@O0Dev.jpg','wb').write(post.content)
+                image = 'photo@O0Dev.jpg'
                 time_now = int(datetime.now().timestamp())
 
                 headers = {
@@ -879,9 +879,9 @@ class IGBoxO0Dev():
 
             for ig in response:
                 user = ig['user']['username']
-                file = open('O0Dev//user_word.txt','a').write(f'{user}\n')
-            users = len(open('O0Dev//user_word.txt','r').read().splitlines())
-        print(f'{self.b1}{self.b3}{self.b2}{self.b0} Done Save {users} in O0Dev//user_user.txt')
+                file = open('user_word.txt','a').write(f'{user}\n')
+            users = len(open('user_word.txt','r').read().splitlines())
+        print(f'{self.b1}{self.b3}{self.b2}{self.b0} Done Save {users} in user_user.txt')
         sleep(3)
     
     def users_user(self):
@@ -928,9 +928,9 @@ class IGBoxO0Dev():
         for ig in xx:
             user = ig['username']
             print(user)
-            file = open('O0Dev//user_user.txt','a').write(f'{user}\n')
-        users = len(open('O0Dev//user_user.txt','r').read().splitlines())
-        print(f'[-] Done Save {users} in O0Dev//user_user.txt')
+            file = open('user_user.txt','a').write(f'{user}\n')
+        users = len(open('user_user.txt','r').read().splitlines())
+        print(f'[-] Done Save {users} in user_user.txt')
         sleep(3)
     
     def del_flow(self):
@@ -1146,7 +1146,7 @@ class IGBoxO0Dev():
         print(self.bb)
         
         try:
-            accs = open('O0Dev//accounts.txt','r').read().splitlines()
+            accs = open('accounts.txt','r').read().splitlines()
         except:
             print(f'{self.b1}{self.b4}{self.b2}{self.b0} accounts.txt Not Found here')
             sleep(3)
@@ -1218,7 +1218,7 @@ class IGBoxO0Dev():
         new_pass = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter New Password For All Account : ')
 
         try:
-            accs = open('O0Dev//accounts.txt','r').read().splitlines()
+            accs = open('accounts.txt','r').read().splitlines()
         except:
             print(f'{self.b1}{self.b4}{self.b2}{self.b0} accounts.txt Not Found here')
             sleep(3)
@@ -1266,7 +1266,7 @@ class IGBoxO0Dev():
                     os.system('cls' if os.name == 'nt' else 'clear')
                     print(f'{self.bb}\n{self.b1}{self.b5}{self.b2}{self.b0} Done : {self.r}\n{self.b1}{self.b5}{self.b2}{self.b0} Bad : {hv}')
                     sleep(7)
-                    open('O0Dev//changed.txt','a').write(f'{user}:{new_pass}\n')
+                    open('changed.txt','a').write(f'{user}:{new_pass}\n')
                 else:
                     hv +=1
                     os.system('cls' if os.name == 'nt' else 'clear')
@@ -1285,7 +1285,7 @@ class IGBoxO0Dev():
         print(self.bb)
 
         try:
-            combo = open('O0Dev//combo.txt','r').read().splitlines()
+            combo = open('combo.txt','r').read().splitlines()
         except:
             print(f'{self.b1}{self.b4}{self.b2}{self.b0} combo.txt Not Found')
             sleep(3)
@@ -1296,15 +1296,15 @@ class IGBoxO0Dev():
                 user = acc.split(':')[0]
                 pasw = acc.split(':')[1]
 
-                open('O0Dev//users.txt','a').write(f'{user}\n')
-                open('O0Dev//pass.txt','a').write(f'{pasw}\n')
+                open('users.txt','a').write(f'{user}\n')
+                open('pass.txt','a').write(f'{pasw}\n')
             except:
                 pass
 
         print(f'{self.b1}{self.b3}{self.b2}{self.b0} Done Sort your combo :)')
         sleep(1.5)
-        print(f'{self.b1}{self.b3}{self.b2}{self.b0} Users => O0Dev//users.txt')
-        print(f'{self.b1}{self.b3}{self.b2}{self.b0} Pass => O0Dev//pass.txt')
+        print(f'{self.b1}{self.b3}{self.b2}{self.b0} Users => users.txt')
+        print(f'{self.b1}{self.b3}{self.b2}{self.b0} Pass => pass.txt')
         sleep(7)
 
     def real_fllow(self):
