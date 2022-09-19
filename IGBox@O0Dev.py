@@ -1319,14 +1319,14 @@ class IGBoxO0Dev():
 
         famous = ['sollaf5','haifa_hassony','welyanalbaiaty94','cristiano']
 
-        # words = 'تابعني-ردفولو'
-        # for w in words.split('-'):
-        #     w = w.replace(' ','')
-        #     url = f'https://www.instagram.com/web/search/topsearch/?context=blended&query={w}&rank_token=0.43773004634682566&include_reel=true'
-        #     response = requests.get(url,headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36 Edg/90.0.818.51'}).json()['users']
-        #     for ig in response:
-        #         uuss = str(ig['user']['username'])
-        #         famous.append(uuss)
+        words = 'تابعني-ردفولو'
+        for w in words.split('-'):
+            w = w.replace(' ','')
+            url = f'https://www.instagram.com/web/search/topsearch/?context=blended&query={w}&rank_token=0.43773004634682566&include_reel=true'
+            response = requests.get(url,headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36 Edg/90.0.818.51'}).json()['users']
+            for ig in response:
+                uuss = str(ig['user']['username'])
+                famous.append(uuss)
 
         try:
             ss = int(input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Sleep : '))
