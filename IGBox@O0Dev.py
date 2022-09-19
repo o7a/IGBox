@@ -23,6 +23,10 @@ class IGBoxO0Dev():
         self.p = 0
         self.m = 0
         self.n = 0
+        self.r = 0
+        self.w = 0
+        self.g = 0
+        self.k = 0
         self.ix = uuid.uuid4()
         self.b0 = Style.RESET_ALL
         self.b1 = Fore.YELLOW + '['
@@ -35,9 +39,19 @@ class IGBoxO0Dev():
    ____________          
   /  _/ ___/ _ )___ __ __
  _/ // (_ / _  / _ \\ \ /
-/___/\___/____/\___/_\_\ v5
+/___/\___/____/\___/_\_\ v6
                          
         """)
+
+    def CheckFiles(self):
+        if os.path.exists(f'O0Dev//story.txt') == False:
+            open('O0Dev//story.txt','a')
+        if os.path.exists(f'O0Dev//accounts.txt') == False:
+            open('O0Dev//accounts.txt','a')
+        if os.path.exists(f'O0Dev//combo.txt') == False:
+            open('O0Dev//combo.txt','a')
+
+        self.HomeScreen()
 
     def HomeScreen(self):
         self.x = 0
@@ -46,6 +60,7 @@ class IGBoxO0Dev():
         self.c = 0
         self.d = 0
         self.s = 0
+
         while True:
             os.system('cls' if os.name == 'nt' else 'clear')
             print(self.bb)
@@ -64,6 +79,10 @@ class IGBoxO0Dev():
 {self.b1}10{self.b2}{self.b0} Delete chat
 {self.b1}11{self.b2}{self.b0} Cheack Email Linked
 {self.b1}12{self.b2}{self.b0} Get Public email
+{self.b1}13{self.b2}{self.b0} Switch Accounts type
+{self.b1}14{self.b2}{self.b0} Change Password From list
+{self.b1}15{self.b2}{self.b0} Sort Combo
+{self.b1}16{self.b2}{self.b0} Increase real followers
 {self.b1}99{self.b2}{self.b0} exit
         """)
             tool = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Num of Tool > ')
@@ -91,6 +110,14 @@ class IGBoxO0Dev():
                 self.cheack_email()
             elif tool == '12':
                 self.public_email()
+            elif tool == '13':
+                self.convert_acc()
+            elif tool == '14':
+                self.change_pass()
+            elif tool == '15':
+                self.sort_combo()
+            elif tool == '16':
+                self.real_fllow()
             elif tool == '99':
                 print(f'{self.b1}{self.b3}{self.b2}{self.b0} I wish u a happy day :)')
                 sleep(3)
@@ -140,11 +167,16 @@ class IGBoxO0Dev():
             url_api = 'https://i.instagram.com/api/v1' + MyPATH
             Secure = requests.get(url_api, headers=headers, cookies=logincookies).json()
             mode = []
-            if ('email') in Secure['step_data']:
-                mode.append('[1] Email')
-            elif ('phone_number') in Secure['step_data']:
-                mode.append('[0] Phone')
-            else:
+            try:
+                if ('email') in Secure['step_data']:
+                    mode.append('[1] Email')
+                elif ('phone_number') in Secure['step_data']:
+                    mode.append('[0] Phone')
+                else:
+                    print(f'{self.b1}{self.b4}{self.b2}{self.b0} Error, Try Again')
+                    sleep(3)
+                    IGBoxO0Dev().HomeScreen()
+            except:
                 print(f'{self.b1}{self.b4}{self.b2}{self.b0} Error, Try Again')
                 sleep(3)
                 IGBoxO0Dev().HomeScreen()
@@ -296,25 +328,28 @@ class IGBoxO0Dev():
             try:
                 num_Report = int(input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Number of Report : '))
             except:
-                num_Report = 15
+                num_Report = 10
 
             
             os.system('cls' if os.name == 'nt' else 'clear')
             print(self.bb)
 
+            coo = login.cookies.get_dict()
+            cookie = f"sessionid={coo['sessionid']};ds_user_id={coo['ds_user_id']};csrftoken={coo['csrftoken']};"
             for i in range(num_Report):
-                data = f"source_name=&reason_id={reportis}&frx_context="
+                data = {'source_name':'',f'reason_id':reportis,'frx_context':''}
                 head = {
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.54",
                     "Host": "i.instagram.com",
-                    'cookie': f"sessionid={self.ssid}" ,
-                    "X-CSRFToken": "uNs1OZ6CPvJBSmmQOvWDKGFkm2frIDEY",
+                    'cookie': cookie ,
+                    "X-CSRFToken": f"{login.cookies.get_dict()['csrftoken']}",
                     "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
                 }
                 try:
-                    start = requests.post(f"https://i.instagram.com/users/{idd}/flag/", headers=head, data=data)
+                    start = requests.post(f"https://www.instagram.com/users/{idd}/report/", headers=head, data=data)
                     if 'ok' in start.text:
                         self.m +=1
+                        sleep(2)
                         os.system('cls' if os.name == 'nt' else 'clear')
                         print(f'{self.bb}\n{self.b1}{self.b5}{self.b2}{self.b0} Done : {self.m}\n{self.b1}{self.b5}{self.b2}{self.b0} Bad : {self.n}')
                     elif start.status_code == 404:
@@ -330,6 +365,7 @@ class IGBoxO0Dev():
                         sleep(300)
                 except:
                     self.n +=1
+                    
                     print(f'{self.bb}\n{self.b1}{self.b5}{self.b2}{self.b0} Done : {self.m}\n{self.b1}{self.b5}{self.b2}{self.b0} Bad : {self.n}')
 
     def Auto_follow(self):
@@ -339,7 +375,7 @@ class IGBoxO0Dev():
         target = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Target : ')
 
         try:
-            accs = open('accounts.txt','r').read().splitlines()
+            accs = open('O0Dev//accounts.txt','r').read().splitlines()
         except:
             print(f'{self.b1}{self.b4}{self.b2}{self.b0} accounts.txt Not Found here')
             sleep(3)
@@ -354,7 +390,7 @@ class IGBoxO0Dev():
             cookie = f"sessionid={coo['sessionid']};ds_user_id={coo['ds_user_id']};csrftoken={coo['csrftoken']};"
             idd = IGBoxO0Dev().get_id(target)
 
-            url2 = f'https://www.instagram.com/web/friendships/{idd}/follow/'
+            url2 = f'https://i.instagram.com/api/v1/web/friendships/{idd}/follow/'
 
             head2 = {
                 'accept':'*/*',
@@ -387,7 +423,6 @@ class IGBoxO0Dev():
                     self.b +=1
                     os.system('cls' if os.name == 'nt' else 'clear')
                     print(f'{self.bb}\n{self.b1}{self.b5}{self.b2}{self.b0} Done : {self.a}\n{self.b1}{self.b5}{self.b2}{self.b0} Bad : {self.b}\n{self.b1}{self.b5}{self.b2}{self.b0} Bad Acc : {self.c}\n{self.b1}{self.b5}{self.b2}{self.b0} Error : {self.d}')
-                    x = open('u.txt','a').write(f'{follow}\n\n')
             except:
                 self.d +=1
                 os.system('cls' if os.name == 'nt' else 'clear')
@@ -406,7 +441,7 @@ class IGBoxO0Dev():
         post = f'{target}?__a=1&__d=dis'
 
         try:
-            accs = open('accounts.txt','r').read().splitlines()
+            accs = open('O0Dev//accounts.txt','r').read().splitlines()
         except:
             print(f'{self.b1}{self.b4}{self.b2}{self.b0} accounts.txt Not Found here')
             sleep(3)
@@ -503,7 +538,7 @@ class IGBoxO0Dev():
         what = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Num of ur option > ')
         if what == '1':
             try:
-                file = open('story.txt','r').read().splitlines()
+                file = open('O0Dev//story.txt','r').read().splitlines()
             except:
                 print(f'{self.b1}{self.b5}{self.b2}{self.b0} Error in open story.txt file')
                 sleep(3)
@@ -732,8 +767,8 @@ class IGBoxO0Dev():
 
             for x in range(int(num_post)):
                 post = requests.get('https://picsum.photos/500/500?random=1')
-                save = open('photo@O0Dev.jpg','wb').write(post.content)
-                image = 'photo@O0Dev.jpg'
+                save = open('O0Dev//photo@O0Dev.jpg','wb').write(post.content)
+                image = 'O0Dev//photo@O0Dev.jpg'
                 time_now = int(datetime.now().timestamp())
 
                 headers = {
@@ -844,9 +879,9 @@ class IGBoxO0Dev():
 
             for ig in response:
                 user = ig['user']['username']
-                file = open('@O0Dev.txt','a').write(f'{user}\n')
-            users = len(open('@O0Dev.txt','r').read().splitlines())
-        print(f'{self.b1}{self.b3}{self.b2}{self.b0} Done Save {users} in @O0Dev.txt')
+                file = open('O0Dev//user_word.txt','a').write(f'{user}\n')
+            users = len(open('O0Dev//user_word.txt','r').read().splitlines())
+        print(f'{self.b1}{self.b3}{self.b2}{self.b0} Done Save {users} in O0Dev//user_user.txt')
         sleep(3)
     
     def users_user(self):
@@ -893,9 +928,9 @@ class IGBoxO0Dev():
         for ig in xx:
             user = ig['username']
             print(user)
-            file = open('@O0Dev.txt','a').write(f'{user}\n')
-        users = len(open('@O0Dev.txt','r').read().splitlines())
-        print(f'[-] Done Save {users} in @O0Dev.txt')
+            file = open('O0Dev//user_user.txt','a').write(f'{user}\n')
+        users = len(open('O0Dev//user_user.txt','r').read().splitlines())
+        print(f'[-] Done Save {users} in O0Dev//user_user.txt')
         sleep(3)
     
     def del_flow(self):
@@ -1105,8 +1140,275 @@ class IGBoxO0Dev():
             print(f'{self.b1}{self.b4}{self.b2}{self.b0} Some Error !!')
             sleep(3)
             IGBoxO0Dev().HomeScreen()
-    
-IGBoxO0Dev().HomeScreen()
+
+    def convert_acc(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(self.bb)
+        
+        try:
+            accs = open('O0Dev//accounts.txt','r').read().splitlines()
+        except:
+            print(f'{self.b1}{self.b4}{self.b2}{self.b0} accounts.txt Not Found here')
+            sleep(3)
+            IGBoxO0Dev().HomeScreen()
+
+        for acc in accs:
+            user = acc.split(':')[0]
+            pasw = acc.split(':')[1]
+            login = IGBoxO0Dev().Insta_login(user,pasw)
+
+            coo = login.get_dict()
+            cookie = f"sessionid={coo['sessionid']};ds_user_id={coo['ds_user_id']};csrftoken={coo['csrftoken']};"
+
+            convertUrl = 'https://i.instagram.com/api/v1/business/account/convert_account/'
+            headerUrl  = {
+                'accept': '*/*',
+                'accept-encoding': 'gzip, deflate, br',
+                'accept-language': 'en-US,en;q=0.9,ar;q=0.8',
+                'content-length': '217',
+                'content-type': 'application/x-www-form-urlencoded',
+                'cookie': cookie,
+                'origin': 'https://www.instagram.com',
+                'referer': 'https://www.instagram.com/',
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36 Edg/91.0.864.71',
+                'x-asbd-id': '198387',
+                'x-csrftoken': f'{coo["csrftoken"]}',
+                'x-ig-app-id': '936619743392459',
+                'x-ig-www-claim': 'hmac.AR2tr9ATAjFiw03wub6DICb8kMwlARf3D1PN6R1B0JGc9X4Q',
+                'x-instagram-ajax': '2d4630c5c4bb',
+            }
+
+            data = {
+                'category_id': '2700',
+                'create_business_id': 'true',
+                'entry_point': 'ig_web_settings',
+                'fb_user_id': '',
+                'fb_user_nonce': '',
+                'page_id': '',
+                'preferred_business_id': '',
+                'should_bypass_contact_check': 'true',
+                'should_show_category': '0',
+                'set_public': 'true',
+                'to_account_type': '2'
+            }
+
+            try:
+                response = requests.post(convertUrl,headers=headerUrl,data=data).text
+                hb = 0
+                if f'{user}' in response:
+                    self.w +=1
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    print(f'{self.bb}\n{self.b1}{self.b5}{self.b2}{self.b0} Done : {self.w}\n{self.b1}{self.b5}{self.b2}{self.b0} Bad : {hb}')
+                    sleep(7)
+                else:
+                    hb +=1
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    print(f'{self.bb}\n{self.b1}{self.b5}{self.b2}{self.b0} Done : {self.w}\n{self.b1}{self.b5}{self.b2}{self.b0} Bad : {hb}')
+                    sleep(7)
+            except:
+                hp +=1
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print(f'{self.bb}\n{self.b1}{self.b5}{self.b2}{self.b0} Done : {self.w}\n{self.b1}{self.b5}{self.b2}{self.b0} Bad : {hb}')
+                sleep(7)
+
+    def change_pass(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(self.bb)
+
+        new_pass = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter New Password For All Account : ')
+
+        try:
+            accs = open('O0Dev//accounts.txt','r').read().splitlines()
+        except:
+            print(f'{self.b1}{self.b4}{self.b2}{self.b0} accounts.txt Not Found here')
+            sleep(3)
+            IGBoxO0Dev().HomeScreen()
+
+        for acc in accs:
+            user = acc.split(':')[0]
+            pasw = acc.split(':')[1]
+            login = IGBoxO0Dev().Insta_login(user,pasw)
+
+            coo = login.get_dict()
+            cookie = f"sessionid={coo['sessionid']};ds_user_id={coo['ds_user_id']};csrftoken={coo['csrftoken']};"
+
+            url = 'https://www.instagram.com/accounts/password/change/'
+
+            head = {
+            'accept': '*/*',
+            'accept-encoding': 'gzip, deflate, br',
+            'accept-language': 'en-US,en;q=0.9,ar;q=0.8',
+            'content-length': '217',
+            'content-type': 'application/x-www-form-urlencoded',
+            'cookie': cookie,
+            'origin': 'https://www.instagram.com',
+            'referer': 'https://www.instagram.com/accounts/password/change/',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36 Edg/91.0.864.71',
+            'x-csrftoken': f'{coo["csrftoken"]}',
+            'x-asbd-id': '437806',
+            'x-ig-app-id': '936619743392459',
+            'x-ig-www-claim': 'hmac.AR2tr9ATAjFiw03wub6DICb8kMwlARf3D1PN6R1B0JGc9X4Q',
+            'x-instagram-ajax': '2d4630c5c4bb',
+            'x-requested-with': 'XMLHttpRequest'
+            }
+            time_now = int(datetime.now().timestamp())
+            data = {
+                'enc_old_password': f'#PWD_INSTAGRAM_BROWSER:0:{time_now}:{pasw}',
+                'enc_new_password1': f'#PWD_INSTAGRAM_BROWSER:0:{time_now}:{new_pass}',
+                'enc_new_password2': f'#PWD_INSTAGRAM_BROWSER:0:{time_now}:{new_pass}'
+            }
+            try:
+                change = requests.post(url,headers=head,data=data).text
+
+                hv = 0
+                if change == '{"status":"ok"}':
+                    self.r +=1
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    print(f'{self.bb}\n{self.b1}{self.b5}{self.b2}{self.b0} Done : {self.r}\n{self.b1}{self.b5}{self.b2}{self.b0} Bad : {hv}')
+                    sleep(7)
+                    open('O0Dev//changed.txt','a').write(f'{user}:{new_pass}\n')
+                else:
+                    hv +=1
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    print(f'{self.bb}\n{self.b1}{self.b5}{self.b2}{self.b0} Done : {self.r}\n{self.b1}{self.b5}{self.b2}{self.b0} Bad : {hv}')
+                    sleep(7)
+            except:
+                hv +=1
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print(f'{self.bb}\n{self.b1}{self.b5}{self.b2}{self.b0} Done : {self.r}\n{self.b1}{self.b5}{self.b2}{self.b0} Bad : {hv}')
+                sleep(7)
+        print(f'{self.b1}{self.b3}{self.b2}{self.b0} User:Password => O0Dev//changed.txt')
+        sleep(7)
+
+    def sort_combo(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(self.bb)
+
+        try:
+            combo = open('O0Dev//combo.txt','r').read().splitlines()
+        except:
+            print(f'{self.b1}{self.b4}{self.b2}{self.b0} combo.txt Not Found')
+            sleep(3)
+            IGBoxO0Dev().HomeScreen()
+
+        for acc in combo:
+            try:
+                user = acc.split(':')[0]
+                pasw = acc.split(':')[1]
+
+                open('O0Dev//users.txt','a').write(f'{user}\n')
+                open('O0Dev//pass.txt','a').write(f'{pasw}\n')
+            except:
+                pass
+
+        print(f'{self.b1}{self.b3}{self.b2}{self.b0} Done Sort your combo :)')
+        sleep(1.5)
+        print(f'{self.b1}{self.b3}{self.b2}{self.b0} Users => O0Dev//users.txt')
+        print(f'{self.b1}{self.b3}{self.b2}{self.b0} Pass => O0Dev//pass.txt')
+        sleep(7)
+
+    def real_fllow(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(self.bb)
+
+        user = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter UserName : ')
+        pasw = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Password : ')
+        login = IGBoxO0Dev().Insta_login(user,pasw)
+        coo = login.get_dict()
+        cookie = f"sessionid={coo['sessionid']};ds_user_id={coo['ds_user_id']};csrftoken={coo['csrftoken']};"
+
+        famous = ['sollaf5','haifa_hassony','welyanalbaiaty94','cristiano']
+
+        # words = 'تابعني-ردفولو'
+        # for w in words.split('-'):
+        #     w = w.replace(' ','')
+        #     url = f'https://www.instagram.com/web/search/topsearch/?context=blended&query={w}&rank_token=0.43773004634682566&include_reel=true'
+        #     response = requests.get(url,headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36 Edg/90.0.818.51'}).json()['users']
+        #     for ig in response:
+        #         uuss = str(ig['user']['username'])
+        #         famous.append(uuss)
+
+        try:
+            ss = int(input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Sleep : '))
+        except:
+            ss = 30
+        
+        Len = len(famous)
+        for target in famous:
+            idd = IGBoxO0Dev().get_id(target)
+
+            url2 = f'https://i.instagram.com/api/v1/web/friendships/{idd}/follow/'
+
+            head2 = {
+                'accept':'*/*',
+                'accept-encoding':'gzip,deflate,br',
+                'accept-language':'en-US,en;q=0.9,ar;q=0.8',
+                'content-length':'0',
+                'content-type':'application/x-www-form-urlencoded',
+                'cookie': cookie,
+                'origin':'https://www.instagram.com',
+                'referer':f'https://www.instagram.com/{target}/',
+                'sec-fetch-dest':'empty',
+                'sec-fetch-mode':'cors',
+                'sec-fetch-site':'same-origin',
+                'user-agent': generate_user_agent(),
+                'x-asbd-id': '437806',
+                'x-csrftoken': coo['csrftoken'],
+                'x-ig-app-id': '936619743392459',
+                'x-ig-www-claim': 'hmac.AR2tr9ATAjFiw03wub6DICb8kMwlARf3D1PN6R1B0JGc9Rcy',
+                'x-instagram-ajax': '0019e974ed32',
+                'x-requested-with':'XMLHttpRequest',
+            }
+            try:
+                follow = requests.post(url2,headers=head2,cookies=coo).text
+
+                if '"status":"ok"' in follow:
+                    self.g +=1
+                    print(f'{self.b1}{self.b3}{self.b2}{self.b0} Working for Increase [({self.g}) from ({Len})]')
+                    sleep(ss)
+                else:
+                    print(f'{self.b1}{self.b4}{self.b2}{self.b0} Some Error Happened !')
+            except:
+                print(f'{self.b1}{self.b4}{self.b2}{self.b0} Some Error Happened !')
+
+        for target in famous:
+            idd = IGBoxO0Dev().get_id(target)
+
+            url2 = f'https://i.instagram.com/api/v1/web/friendships/{idd}/unfollow/'
+
+            head2 = {
+                'accept':'*/*',
+                'accept-encoding':'gzip,deflate,br',
+                'accept-language':'en-US,en;q=0.9,ar;q=0.8',
+                'content-length':'0',
+                'content-type':'application/x-www-form-urlencoded',
+                'cookie': cookie,
+                'origin':'https://www.instagram.com',
+                'referer':f'https://www.instagram.com/{target}/',
+                'sec-fetch-dest':'empty',
+                'sec-fetch-mode':'cors',
+                'sec-fetch-site':'same-origin',
+                'user-agent': generate_user_agent(),
+                'x-asbd-id': '437806',
+                'x-csrftoken': coo['csrftoken'],
+                'x-ig-app-id': '936619743392459',
+                'x-ig-www-claim': 'hmac.AR2tr9ATAjFiw03wub6DICb8kMwlARf3D1PN6R1B0JGc9Rcy',
+                'x-instagram-ajax': '0019e974ed32',
+                'x-requested-with':'XMLHttpRequest',
+            }
+            try:
+                follow = requests.post(url2,headers=head2,cookies=coo).text
+
+                if '"status":"ok"' in follow:
+                    self.k +=1
+                    print(f'{self.b1}{self.b3}{self.b2}{self.b0} Clean [({self.k}) from ({Len})]')
+                    sleep(ss)
+                else:
+                    print(f'{self.b1}{self.b4}{self.b2}{self.b0} Some Error Happened !')
+            except:
+                print(f'{self.b1}{self.b4}{self.b2}{self.b0} Some Error Happened !')
+
+IGBoxO0Dev().CheckFiles()
 
 
 # FREE Tool By @O0Dev (Telegram channel)
