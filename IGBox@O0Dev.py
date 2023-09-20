@@ -1,5 +1,6 @@
+import random
 import requests,os,json,uuid,secrets
-from datetime import datetime
+from datetime import datetime, time
 from json import dumps
 from time import sleep
 from colorama import Fore,Style
@@ -39,7 +40,7 @@ class IGBoxO0Dev():
    ____________          
   /  _/ ___/ _ )___ __ __
  _/ // (_ / _  / _ \\ \ /
-/___/\___/____/\___/_\_\ v6
+/___/\___/____/\___/_\_\ v7
                          
         """)
 
@@ -83,6 +84,7 @@ class IGBoxO0Dev():
 {self.b1}14{self.b2}{self.b0} Change Password From list
 {self.b1}15{self.b2}{self.b0} Sort Combo
 {self.b1}16{self.b2}{self.b0} Increase real followers
+{self.b1}17{self.b2}{self.b0} Post a New Note 
 {self.b1}99{self.b2}{self.b0} exit
         """)
             tool = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Num of Tool > ')
@@ -118,6 +120,8 @@ class IGBoxO0Dev():
                 self.sort_combo()
             elif tool == '16':
                 self.real_fllow()
+            elif tool == '17':
+                self.post_note()
             elif tool == '99':
                 print(f'{self.b1}{self.b3}{self.b2}{self.b0} I wish u a happy day :)')
                 sleep(3)
@@ -130,32 +134,37 @@ class IGBoxO0Dev():
     def Insta_login(self, user, pasw):
         os.system('cls' if os.name == 'nt' else 'clear')
         print(self.bb)
-
-        url = 'https://i.instagram.com/api/v1/accounts/login/'
-
-        headers = {
-            'User-Agent': 'Instagram 113.0.0.39.122 Android (24/5.0; 515dpi; 1440x2416; huawei/google; Nexus 6P; angler; angler; en_US)',
-            "Accept": "*/*",
-            "Accept-Encoding": "gzip, deflate",
-            "Accept-Language": "en-US",
-            "X-IG-Capabilities": "3brTvw==",
-            "X-IG-Connection-Type": "WIFI",
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            'Host': 'i.instagram.com',
-            'Connection': 'keep-alive'
+        url = "https://www.instagram.com/accounts/login/ajax/"
+    
+        head = {
+            'accept':'*/*',
+            'accept-encoding':'gzip,deflate,br',
+            'accept-language':'en-US,en;q=0.9,ar;q=0.8',
+            'content-length':'269',
+            'content-type':'application/x-www-form-urlencoded',
+            'cookie':'ig_did=77A45489-9A4C-43AD-9CA7-FA3FAB22FE24;ig_nrcb=1;csrftoken=VOPH7fUUOP85ChEViZkd2PhLkUQoP8P8;mid=YGwlfgALAAEryeSgDseYghX2LAC-',
+            'origin':'https://www.instagram.com',
+            'referer':'https://www.instagram.com/',
+            'sec-fetch-dest':'empty',
+            'sec-fetch-mode':'cors',
+            'sec-fetch-site':'same-origin',
+            'user-agent': generate_user_agent(),
+            'x-csrftoken':'VOPH7fUUOP85ChEViZkd2PhLkUQoP8P8',
+            'x-ig-app-id':'936619743392459',
+            'x-ig-www-claim':'0',
+            'x-instagram-ajax':'8a8118fa7d40',
+            'x-requested-with':'XMLHttpRequest',
         }
+        time_now = int(datetime.now().timestamp())
         data = {
-            'uuid': self.ix,
-            'password': pasw,
             'username': user,
-            'device_id': self.ix,
-            'from_reg': 'false',
-            '_csrftoken': 'missing',
-            'login_attempt_countn': '0'
+            'enc_password': f'#PWD_INSTAGRAM_BROWSER:0:{time_now}:{pasw}',
+            'queryParams': {},
+            'optIntoOneTap': 'false'
         }
-        login = requests.post(url, headers=headers, data=data)
+        login = requests.post(url, headers=head, data=data)
 
-        if 'logged_in_user' in login.text:
+        if 'userId' in login.text:
             logincookies = login.cookies
             return logincookies
             # FREE Tool By @O0Dev (Telegram channel)
@@ -165,7 +174,7 @@ class IGBoxO0Dev():
             logincookies = login.cookies
             MyPATH = loginjson['challenge']['api_path']
             url_api = 'https://i.instagram.com/api/v1' + MyPATH
-            Secure = requests.get(url_api, headers=headers, cookies=logincookies).json()
+            Secure = requests.get(url_api, headers=head, cookies=logincookies).json()
             mode = []
             try:
                 if ('email') in Secure['step_data']:
@@ -191,7 +200,7 @@ class IGBoxO0Dev():
                 '_csrftoken': 'missing'
             }
 
-            Send_Mode = requests.post(url_api, headers=headers, data=SecureData, cookies=logincookies).json()
+            Send_Mode = requests.post(url_api, headers=head, data=SecureData, cookies=logincookies).json()
             Contact = Send_Mode['step_data']['contact_point']
             print(f'{self.b1}{self.b3}{self.b2}{self.b0} Done Sending The Code To » {Contact}')
             myCode = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Your Code : ')
@@ -201,7 +210,7 @@ class IGBoxO0Dev():
                 '_uid': self.ix,
                 '_csrftoken': 'missing'
             }
-            Send_Code = requests.post(url_api, headers=headers, data=CodeData, cookies=logincookies).text
+            Send_Code = requests.post(url_api, headers=head, data=CodeData, cookies=logincookies).text
             if 'logged_in_user' in Send_Code:
                 return logincookies
             else:
@@ -240,29 +249,7 @@ class IGBoxO0Dev():
         username = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter UserName : ')
         password = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Password : ')
         
-        url = 'https://b.i.instagram.com/api/v1/accounts/login/'
-
-        headers = {
-            'User-Agent': 'Instagram 9.4.0 Android (30/11; 480dpi; 1080x2158; OPPO; CPH2069; OP4C7BL1; qcom; en_US; 276028020)',
-            "Content-Type": "application/x-www-form-urlencoded",
-            "X-CSRFToken": "uNs1OZ6CPvJBSmmQOvWDKGFkm2frIDEY"
-        }
-        data = {
-            'username': username,
-            'password': password,
-            'device_id': f"android-{secrets.token_hex(8)}",
-            '_csrftoken' : '2C3OWk1zw20DXvUj3lr7YT8nCEgGmJJq',
-            'phone_id': self.ix,
-            'guid': self.ix
-
-        }
-        login = requests.post(url, headers=headers, data=data)
-
-        if 'logged_in_user' in login.text:
-            self.ssid = login.cookies.get_dict()['sessionid']
-        else:
-            print(f'{self.b1}{self.b4}{self.b2}{self.b0} Error in login, try another account !')
-            quit()
+        login = IGBoxO0Dev().Insta_login(username,password)
 
         os.system('cls' if os.name == 'nt' else 'clear')
         print(self.bb)
@@ -334,7 +321,7 @@ class IGBoxO0Dev():
             os.system('cls' if os.name == 'nt' else 'clear')
             print(self.bb)
 
-            coo = login.cookies.get_dict()
+            coo = login.get_dict()
             cookie = f"sessionid={coo['sessionid']};ds_user_id={coo['ds_user_id']};csrftoken={coo['csrftoken']};"
             for i in range(num_Report):
                 data = {'source_name':'',f'reason_id':reportis,'frx_context':''}
@@ -342,7 +329,7 @@ class IGBoxO0Dev():
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.54",
                     "Host": "i.instagram.com",
                     'cookie': cookie ,
-                    "X-CSRFToken": f"{login.cookies.get_dict()['csrftoken']}",
+                    "X-CSRFToken": f"{login.get_dict()['csrftoken']}",
                     "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
                 }
                 try:
@@ -842,42 +829,55 @@ class IGBoxO0Dev():
         os.system('cls' if os.name == 'nt' else 'clear')
         print(self.bb)
         email = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Email : ')
-        url  = 'https://i.instagram.com/api/v1/users/lookup/'
+        url  = 'https://www.instagram.com/api/v1/web/accounts/account_recovery_send_ajax/'
+
         head = {
-            'User-Agent': "Instagram 9.7.0 Android (24/7.0; 420dpi; 1080x1920; samsung; SM-N920P; nobleltespr; samsungexynos7420; ar_IQ)",
-            'Cookie' : secrets.token_hex(8)*2,
-            'Method' : "POST",
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            'Host': 'i.instagram.com',
-            'KeepAlive' : 'True',
-            'ContentLength' : '236'
+            'accept': '*/*',
+            'accept-encoding': 'gzip, deflate, br',
+            'accept-language': 'en-US,en;q=0.9',
+            'content-length': '127',
+            'content-type': 'application/x-www-form-urlencoded',
+            'cookie': 'mid=ZOYq0gALAAEFqYwjbcGm6CtMvJ1U; ig_did=E6501660-D8CB-4C45-8557-32FF892C20B1; ig_nrcb=1; datr=ABELZZfkbc7W0rO-4WJM5t3Y; rur="CLN\05461822702780\0541726781259:01f7ef76f392f031a9cfdab3a7e556700f656a5fd6d097c5df3b46748c384dd3c2e983b1"; csrftoken=yrjv5b5E8btoUxmSYz6e9TR1HqeRmOSt',
+            'X-Csrftoken': 'yrjv5b5E8btoUxmSYz6e9TR1HqeRmOSt',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "user-agent": "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36",
+            "x-ig-app-id": "936619743392459",
+            "x-ig-www-claim": "hmac.AR3dC7naiVtTKkwrEY0hwTO9zj4kLxfvf4Srvp3wFyoZFvZV",
+            "x-instagram-ajax": "d3d3aea32e75",
+            "x-requested-with": "XMLHttpRequest"
         }
         dat = {
-            "q": email,
-            "_csrftoken": "missing",
-            "guid": uuid.uuid4(),
-            "device_id": uuid.uuid4()
+            "email_or_username": email
         }
-        req  = requests.post(url,headers=head,data=dat).text
-        if '"status":"ok"' in req:
+        req  = requests.post(url,headers=head,data=dat).json()['message']
+        if req == 'checkpoint_required':
             print(f'{self.b1}{self.b3}{self.b2}{self.b0} Email Linked with instagram')
             sleep(6)
-        else:
+        elif req == 'No users found':
             print(f'{self.b1}{self.b4}{self.b2}{self.b0} Email Not Linked with instagram')
-            sleep(3)
+            sleep(4)
+            IGBoxO0Dev().HomeScreen()
+        else:
+            print(f'{self.b1}{self.b4}{self.b2}{self.b0} Error !!, Try Again later')
+            sleep(4)
             IGBoxO0Dev().HomeScreen()
         
     def users_word(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         print(self.bb)
+        user = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter UserName : ')
+        pasw = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Password : ')
+        login = IGBoxO0Dev().Insta_login(user,pasw)
+
         words = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Words Like (love-moon-iraq) : ')
         for w in words.split('-'):
             w = w.replace(' ','')
             url = f'https://www.instagram.com/web/search/topsearch/?context=blended&query={w}&rank_token=0.43773004634682566&include_reel=true'
 
-            response = requests.get(url,headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36 Edg/90.0.818.51'}).json()['users']
-
-            for ig in response:
+            response = requests.get(url,headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36 Edg/90.0.818.51'},cookies=login).json()
+            for ig in response['users']:
                 user = ig['user']['username']
                 file = open('user_word.txt','a').write(f'{user}\n')
             users = len(open('user_word.txt','r').read().splitlines())
@@ -929,7 +929,13 @@ class IGBoxO0Dev():
             user = ig['username']
             print(user)
             file = open('user_user.txt','a').write(f'{user}\n')
-        users = len(open('user_user.txt','r').read().splitlines())
+
+        try:
+            users = len(open('user_user.txt','r').read().splitlines())
+        except:
+            print(f'{self.b1}{self.b4}{self.b2}{self.b0} Private Account')
+            IGBoxO0Dev().HomeScreen()
+
         print(f'[-] Done Save {users} in user_user.txt')
         sleep(3)
     
@@ -979,7 +985,7 @@ class IGBoxO0Dev():
                 done = requests.post(url,headers=hed1)
                 
                 if '"status":"ok"' in done.text:
-                    print(f'{self.b1}{self.b3}{self.b2}{self.b0} Deleted username => {foou}')
+                    print(f'{self.b1}{self.b3}{self.b2}{self.b0} Deleted username => {foou} || Sleep (16) Seconds')
                     sleep(16)
                 elif 'Please' in done.text:
                     print(f'{self.b1}{self.b4}{self.b2}{self.b0} Banned !!')
@@ -1037,7 +1043,7 @@ class IGBoxO0Dev():
                 
                 dlete = requests.post(urld,headers=hed1)
                 if '"status":"ok"' in dlete.text:
-                    print(f'{self.b1}{self.b3}{self.b2}{self.b0} Deleted Done {alll}')
+                    print(f'{self.b1}{self.b3}{self.b2}{self.b0} Deleted Done {alll} || Sleep (16) Seconds')
                     sleep(16)
                 else:
                     print(f'{self.b1}{self.b4}{self.b2}{self.b0} Banned !')
@@ -1094,8 +1100,8 @@ class IGBoxO0Dev():
                 start = requests.post(url1,headers=hed1)
                 
                 if '"status":"ok"' in start.text:
-                    print(f'{self.b1}{self.b3}{self.b2}{self.b0} Deleted Done => {foothr}')
-                
+                    print(f'{self.b1}{self.b3}{self.b2}{self.b0} Deleted Done => {foothr} || Sleep (16) Seconds')
+                    sleep(16)
                 else:
                     print(f'{self.b1}{self.b4}{self.b2}{self.b0} Banned ! ')
             except IndexError:
@@ -1323,7 +1329,7 @@ class IGBoxO0Dev():
         for w in words.split('-'):
             w = w.replace(' ','')
             url = f'https://www.instagram.com/web/search/topsearch/?context=blended&query={w}&rank_token=0.43773004634682566&include_reel=true'
-            response = requests.get(url,headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36 Edg/90.0.818.51'}).json()['users']
+            response = requests.get(url,headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36 Edg/90.0.818.51'},cookies=login).json()['users']
             for ig in response:
                 uuss = str(ig['user']['username'])
                 famous.append(uuss)
@@ -1407,6 +1413,112 @@ class IGBoxO0Dev():
                     print(f'{self.b1}{self.b4}{self.b2}{self.b0} Some Error Happened !')
             except:
                 print(f'{self.b1}{self.b4}{self.b2}{self.b0} Some Error Happened !')
+        
+    def post_note(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(self.bb)
+
+        user = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter UserName : ')
+        pasw = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Password : ')
+
+        enlist ='QAZ123WSX456EDC789RFV012TGV345YHBUJN678IKLPO0'
+        uud = str(str(''.join((random.choice(enlist) for i in range(8))))+'-'+str(''.join((random.choice(enlist) for i in range(4))))+'-'+str(''.join((random.choice(enlist) for i in range(4))))+'-'+str(''.join((random.choice(enlist) for i in range(4))))+'-'+str(''.join((random.choice(enlist) for i in range(12)))))
+        uud2 = str(str(''.join((random.choice(enlist) for i in range(8))))+'-'+str(''.join((random.choice(enlist) for i in range(4))))+'-'+str(''.join((random.choice(enlist) for i in range(4))))+'-'+str(''.join((random.choice(enlist) for i in range(4))))+'-'+str(''.join((random.choice(enlist) for i in range(12)))))
+
+        url = 'https://i.instagram.com/api/v1/accounts/login/'
+
+        headers = {
+            "Host" : "i.instagram.com",
+            "X-FB-Client-IP" : "True",
+            "X-IG-Connection-Type" : "WiFi",
+            "Accept-Language" : "en-EN;q=1.0",
+            "x-fb-rmd" : "state=URL_ELIGIBLE",
+            "X-IG-Capabilities" : "36r/F/8=",
+            "X-Bloks-Version-Id" : str(secrets.token_hex(8)*4),
+            "X-IG-App-Locale" : "en",
+            "X-IG-ABR-Connection-Speed-KBPS" : "130",
+            "X-IG-Timezone-Offset" : "10800",
+            "X-IG-Mapped-Locale" : "en_EN",
+            "Connection" : "keep-alive",
+            "X-IG-App-ID" : "124024574287414",
+            "X-FB-Friendly-Name" : "api",
+            "X-IG-Bandwidth-Speed-KBPS" : "303.000",
+            "X-Bloks-Is-Panorama-Enabled" : "true",
+            "Priority" : "u=2, i",
+            "X-Pigeon-Rawclienttime" : str(time()),
+            "User-Agent" : "Instagram 275.0.0.17.100 (iPhone8,1; iOS 13_5; en_JO; en-JO; scale=2.00; 750x1334; 457382757) AppleWebKit/420+",
+            "X-IG-Family-Device-ID" : uud,
+            "X-MID" : "ZK0F5gAAAAFe8doHU5fRFe4Tx8Qa",
+            "X-Tigon-Is-Retry" : "False",
+            "Content-Length" : "860",
+            "X-FB-Connection-Type" : "wifi",
+            "X-IG-Device-ID" : uud,
+            "Content-Type" : "application/x-www-form-urlencoded; charset=UTF-8",
+            "X-FB-Server-Cluster" : "True",
+            "X-IG-Connection-Speed" : "0kbps",
+            "IG-INTENDED-USER-ID" : "0",
+            "X-IG-Device-Locale" : "en-JO",
+            "X-FB-HTTP-Engine" : "Liger"
+        }
+
+        data = {
+            "phone_id":uud,
+            "reg_login":"0",
+            "device_id":uud,
+            "has_seen_aart_on":"0",
+            "username": user,
+            "adid":uud2,
+            "login_attempt_count":"0",
+            "enc_password": f"#PWD_INSTAGRAM:0:&:{pasw}"
+        }
+
+        login = requests.post(url,headers=headers,data=data)
+
+        if 'logged_in_user' in login.text:
+            headers['Authorization']=str(login.headers['ig-set-authorization'])
+            headers['IG-INTENDED-USER-ID']=str(login.headers['ig-set-ig-u-ds-user-id'])
+
+            note = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter The Note : ')
+
+            url2 = 'https://i.instagram.com/api/v1/notes/create_note/'
+        
+
+            data2 = {
+                "audience" : "0",
+                "text" : str(note),
+                "_uuid" : str(uuid.uuid4())
+            }
+
+            postn = requests.post(url2,headers=headers,data=data2)
+            if '"status":"ok"' in postn.text:
+                print(f'{self.b1}{self.b3}{self.b2}{self.b0} Done Post New Note')
+                sleep(3)
+                IGBoxO0Dev().HomeScreen()
+            elif 'Note text too large' in postn.text:
+                print(f'{self.b1}{self.b4}{self.b2}{self.b0} Text too large, reduce it')
+                sleep(3)
+                IGBoxO0Dev().HomeScreen()
+            elif postn.status_code== 404:
+                print(f'{self.b1}{self.b4}{self.b2}{self.b0} Some Errors ! Try Again later')
+                sleep(4)
+                IGBoxO0Dev().HomeScreen()
+            else:
+                print(postn.text)
+                sleep(4)
+                IGBoxO0Dev().HomeScreen()
+
+        elif '"error_type":"bad_password"' in login.text:
+            print(f'{self.b1}{self.b4}{self.b2}{self.b0} Bad password')
+            sleep(4)
+            IGBoxO0Dev().HomeScreen()
+        elif '"Please wait a few minutes before you try again."' in login.text:
+            print(f'{self.b1}{self.b4}{self.b2}{self.b0} Please wait a few minutes before you try again')
+            sleep(4)
+            IGBoxO0Dev().HomeScreen()
+        else:
+            print(login.text)
+            sleep(4)
+            IGBoxO0Dev().HomeScreen()
 
 IGBoxO0Dev().CheckFiles()
 
