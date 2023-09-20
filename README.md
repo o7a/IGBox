@@ -35,4 +35,4 @@ It is one tool for several other tools that help you in Instagram and it is comp
 
 # The Coder
  Osama A.M.Y - [Telegram Channel](https://t.me/O0Dev)
- Not responsible for any improper use of this program !
+ || Not responsible for any improper use of this program !
