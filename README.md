@@ -1,4 +1,4 @@
-# IGBox v6
+# IGBox v7
 
 It is one tool for several other tools that help you in Instagram and it is completely free and will remain
 
@@ -31,6 +31,8 @@ It is one tool for several other tools that help you in Instagram and it is comp
   - Change Password From list
   - Sort Combo
   - Increase real followers
+  - Post New Note (even bzns account)
 
 # The Coder
  Osama A.M.Y - [Telegram Channel](https://t.me/O0Dev)
+ Not responsible for any improper use of this program !
