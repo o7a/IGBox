@@ -1,4 +1,5 @@
 import random
+import re
 import requests,os,json,uuid,secrets
 from datetime import datetime, time
 from json import dumps
@@ -40,7 +41,7 @@ class IGBoxO0Dev():
    ____________          
   /  _/ ___/ _ )___ __ __
  _/ // (_ / _  / _ \\ \ /
-/___/\___/____/\___/_\_\ v7
+/___/\___/____/\___/_\_\ v7.1
                          
         """)
 
@@ -227,24 +228,28 @@ class IGBoxO0Dev():
     def get_id(self,user):
         os.system('cls' if os.name == 'nt' else 'clear')
         print(self.bb)
-        url = f"https://www.instagram.com/{user}/?__a=1&__d=dis"
-
-        head = {
-            'accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'accept-encoding':'gzip,deflate,br',
-            'accept-language':'en-US,en;q=0.9,ar;q=0.8',
-            'cookie':'ig_did=77A45489-9A4C-43AD-9CA7-FA3FAB22FE24;ig_nrcb=1;csrftoken=VOPH7fUUOP85ChEViZkd2PhLkUQoP8P8;mid=YGwlfgALAAEryeSgDseYghX2LAC-',
-            'user-agent': generate_user_agent(),
-        }
-
-        idd = requests.get(url,headers=head).json()['logging_page_id'].split('_')[1]
-        return str(idd)
+        url = f"https://www.instagram.com/{user}/"
+        response = requests.get(url)
+        if response.status_code == 200:
+            try:
+                match = re.search(r'"profilePage_([0-9]+)"', response.text)
+                if match:
+                    user_id = match.group(1)
+                    return str(user_id)
+                else:
+                    print(f'{self.b1}{self.b4}{self.b2}{self.b0} Error in find @{user} id from instagram')
+                    sleep(3)
+                    IGBoxO0Dev().HomeScreen()
+            except Exception:
+                print(f'{self.b1}{self.b4}{self.b2}{self.b0} Error in find @{user} id from instagram')
+                sleep(3)
+                IGBoxO0Dev().HomeScreen()
 
     def vip_Report(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         print(self.bb)
 
-        special_users = ['r6r9','o.7a','oo']
+        special_users = ['r6r9','o.7a','o.7ay','oo']
 
         username = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter UserName : ')
         password = input(f'{self.b1}{self.b5}{self.b2}{self.b0} Enter Password : ')
@@ -464,13 +469,14 @@ class IGBoxO0Dev():
             }
             x = requests.get(post,headers=head).json()
             post_id = int(x['items'][0]['pk']) # FREE Tool By @O0Dev (Telegram channel)
+            #print(str(post_id))
             comment_text = input(f'{self.b1}{self.b4}{self.b2}{self.b0} Enter The Comment : ')
 
             url_post = f"https://www.instagram.com/web/comments/{post_id}/add/"
 
             headers = {
                 "accept": "*/*",
-                "accept-encoding": "gzip, deflate, br",
+                "accept-encoding": "*",
                 "accept-language": "en-US,en;q=0.9",
                 "content-length": "39",
                 "content-type": "application/x-www-form-urlencoded",
@@ -539,9 +545,14 @@ class IGBoxO0Dev():
                         'cookie': cookie,
                         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36 Edg/94.0.992.47',
                     }
-                    s = f'https://www.instagram.com/{uuss}/?__a=1&__d=dis'
-                    x = requests.get(s,headers=hid).json()
-                    iid = x['logging_page_id'].split('_')[1]
+                    
+                    try:
+                        idd = IGBoxO0Dev().get_id(uuss)
+                    except:
+                        print(f'{self.b1}{self.b4}{self.b2}{self.b0} Error in find @{uuss} on instagram')
+                        sleep(3)
+                        IGBoxO0Dev().HomeScreen()
+
                     surl = f'https://www.instagram.com/graphql/query/?query_hash=c9c56db64beb4c9dea2d17740d0259d9&variables=%7B%22reel_ids%22%3A%5B%22{iid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D'
                     xx = requests.get(surl,headers=hid).json()
                     story_count =  len(xx["data"]["reels_media"][0]["items"])
@@ -590,9 +601,12 @@ class IGBoxO0Dev():
                 except:
                     continue
         elif what == '2':
-            get_id = f'https://www.instagram.com/{user}/?__a=1&__d=dis'
-            re = requests.get(get_id,cookies=coo).json()
-            idd = re['logging_page_id'].split('_')[1]
+            try:
+                idd = IGBoxO0Dev().get_id(uuss)
+            except:
+                print(f'{self.b1}{self.b4}{self.b2}{self.b0} Error in find @{uuss} on instagram')
+                sleep(3)
+                IGBoxO0Dev().HomeScreen()
             count = str(re['graphql']['user']['edge_follow']['count'])
             option = 'following'
             url = f'https://i.instagram.com/api/v1/friendships/{idd}/{option}/?count={count}'
@@ -621,9 +635,12 @@ class IGBoxO0Dev():
                         'cookie': cookie,
                         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36 Edg/94.0.992.47',
                     }
-                    s = f'https://www.instagram.com/{uuss}/?__a=1&__d=dis'
-                    x = requests.get(s,headers=hid).json()
-                    iid = x['logging_page_id'].split('_')[1]
+                    try:
+                        idd = IGBoxO0Dev().get_id(uuss)
+                    except:
+                        print(f'{self.b1}{self.b4}{self.b2}{self.b0} Error in find @{uuss} on instagram')
+                        sleep(3)
+                        IGBoxO0Dev().HomeScreen()
                     surl = f'https://www.instagram.com/graphql/query/?query_hash=c9c56db64beb4c9dea2d17740d0259d9&variables=%7B%22reel_ids%22%3A%5B%22{iid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D'
                     xx = requests.get(surl,headers=hid).json()
                     story_count =  len(xx["data"]["reels_media"][0]["items"])
@@ -686,9 +703,12 @@ class IGBoxO0Dev():
                             'cookie': cookie,
                             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36 Edg/94.0.992.47',
                         }
-                        s = f'https://www.instagram.com/{uuss}/?__a=1&__d=dis'
-                        x = requests.get(s,headers=hid).json()
-                        iid = x['logging_page_id'].split('_')[1]
+                        try:
+                            idd = IGBoxO0Dev().get_id(uuss)
+                        except:
+                            print(f'{self.b1}{self.b4}{self.b2}{self.b0} Error in find @{uuss} on instagram')
+                            sleep(3)
+                            IGBoxO0Dev().HomeScreen()
                         surl = f'https://www.instagram.com/graphql/query/?query_hash=c9c56db64beb4c9dea2d17740d0259d9&variables=%7B%22reel_ids%22%3A%5B%22{iid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D'
                         xx = requests.get(surl,headers=hid).json()
                         story_count =  len(xx["data"]["reels_media"][0]["items"])
@@ -1009,18 +1029,7 @@ class IGBoxO0Dev():
 
         while True:
             alll +=1
-            ur = 'https://www.instagram.com/{}/?__a=1&__d=dis'.format(user)
-                
-            hedID = {
-                'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                'accept-encoding': 'gzip, deflate, br',
-                'accept-language': 'en-US,en;q=0.9,ar;q=0.8',
-                'cache-control': 'no-cache',
-                'cookie': 'ig_did=77A45489-9A4C-43AD-9CA7-FA3FAB22FE24; ig_nrcb=1; mid=YGwlfgALAAEryeSgDseYghX2LAC-; csrftoken=EMbT4gJqC4q9NTF2JVgBrAnTNC2MGPQA; ds_user_id=47432466264; datr=9D0-YLR0rApS9iOG6npp3drV; shbid=489; shbts=1616344547.8202462; rur=ASH; sessionid='+coo['sessionid'],
-                'pragma': 'no-cache',
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36 Edg/91.0.864.71'
-                }
-            idu = requests.get(ur,headers=hedID)
+            idu = IGBoxO0Dev().get_id(user)
             try:
                 idd = idu.json()['graphql']['user']['edge_owner_to_timeline_media']['edges'][0]['node']['id']
                 urld = 'https://www.instagram.com/create/{}/delete/'.format(idd)
